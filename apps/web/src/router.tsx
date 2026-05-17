@@ -1,23 +1,23 @@
-import type { AppRouter } from "@er-octogone-2026/api/routers/index";
-import { QueryCache, QueryClient } from "@tanstack/react-query";
+import type { AppRouter } from '@er-octogone-2026/api/routers/index';
+import { QueryCache, QueryClient } from '@tanstack/react-query';
 
-import "./index.css";
-import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { toast } from "sonner";
+import { createRouter as createTanStackRouter } from '@tanstack/react-router';
+import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
+import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query';
+import { toast } from 'sonner';
+import './index.css';
 
-import Loader from "./components/loader";
-import { routeTree } from "./routeTree.gen";
-import { TRPCProvider } from "./utils/trpc";
+import Loader from './components/loader';
+import { routeTree } from './routeTree.gen';
+import { TRPCProvider } from './utils/trpc';
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
       toast.error(error.message, {
         action: {
-          label: "retry",
+          label: 'retry',
           onClick: query.invalidate,
         },
       });
@@ -27,14 +27,15 @@ export const queryClient = new QueryClient({
 });
 
 function getTrpcUrl(): string {
-  // Browser: relative URL (same origin)
-  if (typeof window !== "undefined") return "/api/trpc";
-  // SSR: fetch needs an absolute URL
-  const origin =
-    process.env.CORS_ORIGIN ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
-    "http://localhost:3001";
-  return `${origin}/api/trpc`;
+  if (typeof window !== 'undefined') return '/api/trpc';
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}/api/trpc`;
+  }
+  if (process.env.APP_URL) {
+    return `${process.env.APP_URL.replace(/\/$/, '')}/api/trpc`;
+  }
+  return `http://localhost:${process.env.PORT ?? 3000}/api/trpc`;
 }
 
 const trpcClient = createTRPCClient<AppRouter>({
@@ -73,7 +74,7 @@ export const getRouter = () => {
   return router;
 };
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface Register {
     router: ReturnType<typeof getRouter>;
   }

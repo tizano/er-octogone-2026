@@ -25,7 +25,7 @@ Then, run the development server:
 bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the fullstack application.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the fullstack application.
 
 ## UI Customization
 
@@ -46,7 +46,7 @@ npx shadcn@latest add accordion dialog popover sheet table -c packages/ui
 Import shared components like this:
 
 ```tsx
-import { Button } from "@er-octogone-2026/ui/components/button";
+import { Button } from '@er-octogone-2026/ui/components/button';
 ```
 
 ### Add app-specific blocks
