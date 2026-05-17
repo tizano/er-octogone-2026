@@ -11,6 +11,7 @@
     "@er-octogone-2026/api": "workspace:*",
     "@er-octogone-2026/env": "workspace:*",
     "@er-octogone-2026/ui": "workspace:*",
+    "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.99.0",
     "@tanstack/react-router": "^1.168.22",
@@ -24,6 +25,7 @@
     "next-themes": "catalog:",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-hook-form": "^7.76.0",
     "sonner": "^2.0.7",
     "tailwindcss": "^4.2.2",
     "zod": "catalog:"

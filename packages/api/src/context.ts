@@ -1,4 +1,4 @@
-export async function createContext({ req }: { req: Request }) {
+export async function createContext(_ctx: { req: Request }) {
   return {
     auth: null,
     session: null,

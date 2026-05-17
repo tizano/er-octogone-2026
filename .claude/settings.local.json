@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"h:\\\\projet-web\\\\er-octogone-2026\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(bun add *)",
+      "Bash(bun run *)",
+      "Bash(bunx tsc *)"
+    ]
+  }
+}

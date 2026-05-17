@@ -26,10 +26,21 @@ export const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
 });
 
+function getTrpcUrl(): string {
+  // Browser: relative URL (same origin)
+  if (typeof window !== "undefined") return "/api/trpc";
+  // SSR: fetch needs an absolute URL
+  const origin =
+    process.env.CORS_ORIGIN ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ??
+    "http://localhost:3001";
+  return `${origin}/api/trpc`;
+}
+
 const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      url: getTrpcUrl(),
     }),
   ],
 });
