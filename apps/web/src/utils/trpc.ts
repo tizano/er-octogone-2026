@@ -1,0 +1,4 @@
+import type { AppRouter } from "@er-octogone-2026/api/routers/index";
+import { createTRPCContext } from "@trpc/tanstack-react-query";
+
+export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>();
