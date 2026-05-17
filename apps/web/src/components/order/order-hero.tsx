@@ -3,7 +3,7 @@ export function OrderHero() {
     <div className="text-center mb-10">
       <h1 className="text-3xl font-black uppercase leading-tight">
         Out of stock
-        <br />à Octogone ?<br />
+        <br />à OctoGônes ?<br />
         😱
       </h1>
       <p className="mt-3 text-lg">Passez commande ici</p>
