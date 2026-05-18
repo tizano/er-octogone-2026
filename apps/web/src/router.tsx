@@ -32,11 +32,13 @@ export const queryClient = new QueryClient({
 function getTrpcUrl(): string {
   if (typeof window !== 'undefined') return '/api/trpc';
 
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}/api/trpc`;
-  }
+  // APP_URL d'abord: le custom domain n'est pas derrière Vercel Deployment
+  // Protection, contrairement à VERCEL_URL (*.vercel.app) qui l'est.
   if (process.env.APP_URL) {
     return `${process.env.APP_URL.replace(/\/$/, '')}/api/trpc`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}/api/trpc`;
   }
   return `http://localhost:${process.env.PORT ?? 3000}/api/trpc`;
 }
