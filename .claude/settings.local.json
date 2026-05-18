@@ -6,7 +6,9 @@
       "Bash(Format-Table -AutoSize)",
       "Bash(bun add *)",
       "Bash(bun run *)",
-      "Bash(bunx tsc *)"
+      "Bash(bunx tsc *)",
+      "Bash(find h:/projet-web/er-octogone-2026/node_modules/.bun/@tanstack+react-start-server@*/node_modules/@tanstack/react-start-server/dist -name \"*.d.ts\")",
+      "Bash(xargs grep -l \"handlers\")"
     ]
   }
 }

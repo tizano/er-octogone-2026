@@ -24,6 +24,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: 'Octogone 2026 — Epic Rolls' },
+      { rel: 'robot', content: 'noindex' },
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),

@@ -3,9 +3,12 @@ import { QueryCache, QueryClient } from '@tanstack/react-query';
 
 import { createRouter as createTanStackRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
+import { createIsomorphicFn } from '@tanstack/react-start';
+import { getRequestHeaders } from '@tanstack/react-start/server';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query';
 import { toast } from 'sonner';
+import superjson from 'superjson';
 import './index.css';
 
 import Loader from './components/loader';
@@ -38,10 +41,19 @@ function getTrpcUrl(): string {
   return `http://localhost:${process.env.PORT ?? 3000}/api/trpc`;
 }
 
+const getSsrHeaders = createIsomorphicFn()
+  .client((): Record<string, string> => ({}))
+  .server((): Record<string, string> => {
+    const cookie = (getRequestHeaders() as unknown as Headers).get('cookie');
+    return cookie ? { cookie } : {};
+  });
+
 const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
+      transformer: superjson,
       url: getTrpcUrl(),
+      headers: getSsrHeaders,
     }),
   ],
 });
