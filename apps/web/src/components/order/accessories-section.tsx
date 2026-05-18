@@ -49,7 +49,7 @@ export function AccessoriesSection({
           Optionnel
         </div>
       </div>
-      <p className="mb-5 text-[#6b6573] text-sm leading-relaxed">
+      <p className="mb-4 text-[#6b6573] text-sm leading-relaxed">
         Ajoutez des accessoires à l'unité, en plus de celles incluses dans votre
         Epic Box.
       </p>

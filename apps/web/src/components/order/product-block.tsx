@@ -71,13 +71,13 @@ export function ProductBlock({
         )}
       </div>
 
-      <p className="mb-5 text-[#6b6573] text-sm leading-relaxed">
-        Inclus :{' '}
+      <p className="mb-4 text-[#6b6573] text-sm leading-relaxed">
+        Inclus avec votre{' '}
+        <strong className="font-semibold text-[#1c1a1e]">Epic Box</strong>:
+        <br />
         <strong className="font-semibold text-[#1c1a1e]">
           {bundledProducts.map((p) => p.title).join(' - ')}
         </strong>
-        <br />
-        Choisissez vos finitions ci-dessous.
       </p>
 
       <div className="mb-6 flex flex-col gap-1">
@@ -103,56 +103,61 @@ export function ProductBlock({
       )}
 
       {slots.length > 0 && (
-        <div className="flex flex-col gap-4">
-          {slots.map((slot, i) => (
-            <div
-              key={slot.slotId}
-              className="rounded-lg border border-[#e7e2ed] bg-[#faf7ff] p-4"
-            >
-              {quantity > 1 && (
-                <p className="mb-3 font-semibold text-[11px] text-[#4a2278] uppercase tracking-[0.12em]">
-                  {product.title} n°{i + 1}
-                </p>
-              )}
+        <>
+          <div className="text-[#8b8694] text-sm mb-2">
+            Choisissez vos finitions ci-dessous.
+          </div>
+          <div className="flex flex-col gap-4">
+            {slots.map((slot, i) => (
+              <div
+                key={slot.slotId}
+                className="rounded-lg border border-[#e7e2ed] bg-[#faf7ff] p-4"
+              >
+                {quantity > 1 && (
+                  <p className="mb-3 font-semibold text-[11px] text-[#4a2278] uppercase tracking-[0.12em]">
+                    {product.title} n°{i + 1}
+                  </p>
+                )}
 
-              {hasOptions && (
-                <OptionSelectors
-                  product={product}
-                  variantId={slot.variantId}
-                  onVariantChange={(vid) => onVariantChange(slot.slotId, vid)}
-                />
-              )}
+                {hasOptions && (
+                  <OptionSelectors
+                    product={product}
+                    variantId={slot.variantId}
+                    onVariantChange={(vid) => onVariantChange(slot.slotId, vid)}
+                  />
+                )}
 
-              {bundledProducts.length > 0 && (
-                <div
-                  className={`flex flex-col gap-3 ${hasOptions ? 'mt-4 border-t border-[#e7e2ed] pt-4' : ''}`}
-                >
-                  {bundledProducts.map((acc) => {
-                    if (acc.variants.length <= 1) return null;
-                    const current = slot.includedAccessories.find(
-                      (a) => a.productId === acc.id.toString(),
-                    );
-                    return (
-                      <IncludedAccessorySelect
-                        key={acc.id}
-                        accessory={acc}
-                        slotId={slot.slotId}
-                        current={current}
-                        onChange={(variantId) =>
-                          onIncludedChange(
-                            slot.slotId,
-                            acc.id.toString(),
-                            variantId,
-                          )
-                        }
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                {bundledProducts.length > 0 && (
+                  <div
+                    className={`flex flex-col gap-3 ${hasOptions ? 'mt-4 border-t border-[#e7e2ed] pt-4' : ''}`}
+                  >
+                    {bundledProducts.map((acc) => {
+                      if (acc.variants.length <= 1) return null;
+                      const current = slot.includedAccessories.find(
+                        (a) => a.productId === acc.id.toString(),
+                      );
+                      return (
+                        <IncludedAccessorySelect
+                          key={acc.id}
+                          accessory={acc}
+                          slotId={slot.slotId}
+                          current={current}
+                          onChange={(variantId) =>
+                            onIncludedChange(
+                              slot.slotId,
+                              acc.id.toString(),
+                              variantId,
+                            )
+                          }
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </section>
   );
