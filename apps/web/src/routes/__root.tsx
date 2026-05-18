@@ -26,7 +26,11 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       { title: 'OctoGônes 2026 - Epic Rolls' },
       { rel: 'robot', content: 'noindex' },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      { rel: 'stylesheet', href: appCss },
+      { rel: 'icon', type: 'image/png', href: '/favicon-epic-rolls.png' },
+      { rel: 'apple-touch-icon', href: '/favicon-epic-rolls.png' },
+    ],
   }),
   component: RootDocument,
 });
