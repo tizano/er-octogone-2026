@@ -11,6 +11,8 @@ export const env = createEnv({
     SHOPIFY_CLIENT_ID: z.string().min(1),
     SHOPIFY_CLIENT_SECRET: z.string().min(1),
     SHOPIFY_APP_AUTOMATION_TOKEN: z.string().min(1),
+    DISCORD_WEBHOOK_URL: z.string().min(1),
+    DISCORD_ROLE_ID: z.string().min(1),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

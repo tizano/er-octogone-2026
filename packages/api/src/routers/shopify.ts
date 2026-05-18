@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { type DiscordOrderLine, notifyDiscordOrder } from '../discord';
 import { publicProcedure, router } from '../index';
 import {
   completeDraftOrder,
@@ -212,6 +213,69 @@ export const shopifyRouter = router({
         price: shippingPrice,
       });
       const completed = await completeDraftOrder(draft.id);
+
+      // Build Discord notification payload (best effort — never fail the order)
+      const findVariantTitle = (productId: string, variantId: string) => {
+        const p = findProduct(productId);
+        const v = p?.variants.find((x) => x.id.toString() === variantId);
+        return v?.title;
+      };
+
+      const discordLines: DiscordOrderLine[] = [];
+      for (const slot of input.slots) {
+        const main = findProduct(slot.productId);
+        discordLines.push({
+          title: main?.title ?? 'Produit',
+          variantTitle: findVariantTitle(slot.productId, slot.variantId),
+          quantity: 1,
+        });
+        for (const inc of slot.includedAccessories) {
+          const acc = findProduct(inc.productId);
+          discordLines.push({
+            title: acc?.title ?? 'Accessoire',
+            variantTitle: findVariantTitle(inc.productId, inc.variantId),
+            quantity: 1,
+            included: true,
+          });
+        }
+      }
+      const extrasGrouped = new Map<
+        string,
+        { title: string; variantTitle?: string; quantity: number }
+      >();
+      for (const u of input.extras) {
+        const key = `${u.productId}:${u.variantId}`;
+        const existing = extrasGrouped.get(key);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          const p = findProduct(u.productId);
+          extrasGrouped.set(key, {
+            title: p?.title ?? 'Accessoire',
+            variantTitle: findVariantTitle(u.productId, u.variantId),
+            quantity: 1,
+          });
+        }
+      }
+      for (const line of extrasGrouped.values()) {
+        discordLines.push(line);
+      }
+
+      try {
+        await notifyDiscordOrder({
+          orderName: completed.name,
+          customerName: `${input.customer.shipping.firstName} ${input.customer.shipping.lastName}`,
+          customerEmail: input.customer.email,
+          customerPhone: input.customer.phone,
+          shippingCity: `${input.customer.shipping.zip} ${input.customer.shipping.city}`,
+          subtotal,
+          shipping: shippingPrice,
+          total: subtotal + shippingPrice,
+          lines: discordLines,
+        });
+      } catch (err) {
+        console.error('[discord] notification failed:', err);
+      }
 
       return {
         draftOrderId: draft.id,
