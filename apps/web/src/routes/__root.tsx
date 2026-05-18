@@ -39,7 +39,7 @@ function RootDocument() {
       </head>
       <body>
         <Outlet />
-        <Toaster richColors />
+        <Toaster richColors position="top-center" />
         <TanStackRouterDevtools position="bottom-left" />
         <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
         <Scripts />

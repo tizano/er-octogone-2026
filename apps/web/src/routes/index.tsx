@@ -115,6 +115,7 @@ function OrderPage() {
       onSuccess: (data) => {
         setOrderName(data.orderName);
         setPhase('confirmed');
+        toast.success(`Commande ${data.orderName} enregistrée 🎉`);
       },
       onError: (err) => {
         toast.error(`Erreur : ${err.message}`);
@@ -122,48 +123,53 @@ function OrderPage() {
     }),
   );
 
-  const onSubmit = handleSubmit(async (customer) => {
-    if (slots.length === 0) {
-      toast.error('Veuillez ajouter au moins un produit');
-      return;
-    }
+  const onSubmit = handleSubmit(
+    async (customer) => {
+      if (slots.length === 0) {
+        toast.error('Veuillez ajouter au moins un produit');
+        return;
+      }
 
-    const unselected = slots.filter((s) => !s.variantId);
-    if (unselected.length > 0) {
-      toast.error('Veuillez sélectionner tous les variants de produits');
-      return;
-    }
+      const unselected = slots.filter((s) => !s.variantId);
+      if (unselected.length > 0) {
+        toast.error('Veuillez sélectionner tous les variants de produits');
+        return;
+      }
 
-    const badAccessory = accessories.find((a) => a.enabled && !a.variantId);
-    if (badAccessory) {
-      toast.error(
-        'Veuillez sélectionner le variant de chaque accessoire activé',
-      );
-      return;
-    }
+      const badAccessory = accessories.find((a) => a.enabled && !a.variantId);
+      if (badAccessory) {
+        toast.error(
+          'Veuillez sélectionner le variant de chaque accessoire activé',
+        );
+        return;
+      }
 
-    const billing = customer.billingSameAsShipping
-      ? customer.shipping
-      : customer.billing;
+      const billing = customer.billingSameAsShipping
+        ? customer.shipping
+        : customer.billing;
 
-    await createOrder.mutateAsync({
-      mainSlots: slots.map((s) => ({
-        productId: s.productId,
-        variantId: s.variantId,
-      })),
-      accessories: accessories.map((a) => ({
-        productId: a.productId,
-        variantId: a.variantId,
-        enabled: a.enabled,
-      })),
-      customer: {
-        shipping: customer.shipping,
-        billing,
-        email: customer.email,
-        phone: customer.phone,
-      },
-    });
-  });
+      await createOrder.mutateAsync({
+        mainSlots: slots.map((s) => ({
+          productId: s.productId,
+          variantId: s.variantId,
+        })),
+        accessories: accessories.map((a) => ({
+          productId: a.productId,
+          variantId: a.variantId,
+          enabled: a.enabled,
+        })),
+        customer: {
+          shipping: customer.shipping,
+          billing,
+          email: customer.email,
+          phone: customer.phone,
+        },
+      });
+    },
+    () => {
+      toast.error('Veuillez vérifier les champs en rouge');
+    },
+  );
 
   if (phase === 'confirmed') return <OrderConfirmation orderName={orderName} />;
 
@@ -216,9 +222,7 @@ function OrderPage() {
           disabled={createOrder.isPending}
           className="w-full bg-[#4a2278] hover:bg-[#3a1a60] disabled:opacity-60 text-white font-black uppercase py-4 rounded-sm text-base tracking-widest transition-colors"
         >
-          {createOrder.isPending
-            ? 'Enregistrement…'
-            : 'Enregistrer ma commande'}
+          {createOrder.isPending ? 'En cours…' : 'Valider ma commande'}
         </button>
       </form>
     </div>
