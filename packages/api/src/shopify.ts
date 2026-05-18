@@ -28,7 +28,7 @@ async function getToken(): Promise<string> {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Shopify token request failed: ${res.status} — ${body}`);
+    throw new Error(`Shopify token request failed: ${res.status} - ${body}`);
   }
 
   const data = (await res.json()) as {
@@ -65,7 +65,7 @@ async function graphql<T>(
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Shopify GraphQL failed: ${res.status} — ${body}`);
+    throw new Error(`Shopify GraphQL failed: ${res.status} - ${body}`);
   }
 
   const body = (await res.json()) as GraphQLResponse<T>;
@@ -228,6 +228,13 @@ export async function getProducts(): Promise<ShopifyProduct[]> {
 export interface LineItem {
   variantId: number;
   quantity: number;
+  discountPercentage?: number;
+  discountTitle?: string;
+}
+
+export interface ShippingLineInput {
+  title: string;
+  price: number;
 }
 
 export interface AddressInput {
@@ -264,6 +271,7 @@ const DRAFT_ORDER_CREATE_MUTATION = `
 export async function createDraftOrder(
   lineItems: LineItem[],
   customer: CustomerInput,
+  shippingLine: ShippingLineInput,
 ): Promise<{ id: number; name: string; gid: string }> {
   const toMailingAddress = (addr: AddressInput, phone?: string) => ({
     firstName: addr.firstName,
@@ -281,9 +289,22 @@ export async function createDraftOrder(
     tags: ['octogone-2026'],
     shippingAddress: toMailingAddress(customer.shipping, customer.phone),
     billingAddress: toMailingAddress(customer.billing, customer.phone),
+    shippingLine: {
+      title: shippingLine.title,
+      price: shippingLine.price.toFixed(2),
+    },
     lineItems: lineItems.map((item) => ({
       variantId: variantGid(item.variantId),
       quantity: item.quantity,
+      ...(item.discountPercentage && item.discountPercentage > 0
+        ? {
+            appliedDiscount: {
+              value: item.discountPercentage,
+              valueType: 'PERCENTAGE',
+              title: item.discountTitle ?? 'Remise',
+            },
+          }
+        : {}),
     })),
     metafields: [
       {

@@ -1,11 +1,18 @@
-export type ProductSlot = {
-  slotId: string;
+export type IncludedAccessory = {
   productId: string;
   variantId: string;
 };
 
-export type AccessoryState = {
+export type ProductSlot = {
+  slotId: string;
   productId: string;
-  enabled: boolean;
+  variantId: string;
+  includedAccessories: IncludedAccessory[];
+};
+
+export type AccessoryUnit = {
+  unitId: string;
   variantId: string;
 };
+
+export type AccessoryExtras = Record<string, AccessoryUnit[]>;

@@ -22,12 +22,15 @@ function NumberInput({
 		<NumberFieldPrimitive.Root min={min} {...props}>
 			<NumberFieldPrimitive.Group
 				data-slot="number-input"
-				className={cn("inline-flex h-8 items-stretch rounded-none", className)}
+				className={cn(
+					"inline-flex h-10 w-fit items-stretch overflow-hidden rounded-md border border-[#d8d2e0] bg-white",
+					className,
+				)}
 			>
 				<NumberFieldPrimitive.Decrement
 					data-slot="number-input-decrement"
 					className={cn(
-						"inline-flex w-8 shrink-0 items-center justify-center rounded-none bg-primary text-primary-foreground outline-none transition-colors hover:bg-primary/80 focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-3.5",
+						"inline-flex w-10 shrink-0 items-center justify-center bg-transparent text-[#1c1a1e] outline-none transition-colors hover:bg-[#f9f5ff] focus-visible:bg-[#f9f5ff] disabled:pointer-events-none disabled:text-[#8b8694] disabled:opacity-60 [&_svg]:size-3.5",
 						buttonClassName,
 					)}
 				>
@@ -36,14 +39,14 @@ function NumberInput({
 				<NumberFieldPrimitive.Input
 					data-slot="number-input-input"
 					className={cn(
-						"h-8 w-full min-w-0 flex-1 border-input border-y bg-transparent px-2.5 py-1 text-center text-xs tabular-nums outline-none transition-colors [appearance:textfield] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 dark:disabled:bg-input/80 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+						"h-full w-12 min-w-0 border-x border-[#e7e2ed] bg-transparent text-center font-semibold text-sm text-[#1c1a1e] tabular-nums outline-none transition-colors [appearance:textfield] focus-visible:bg-[#f9f5ff] disabled:pointer-events-none disabled:opacity-60 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
 						inputClassName,
 					)}
 				/>
 				<NumberFieldPrimitive.Increment
 					data-slot="number-input-increment"
 					className={cn(
-						"inline-flex w-8 shrink-0 items-center justify-center rounded-none bg-primary text-primary-foreground outline-none transition-colors hover:bg-primary/80 focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-3.5",
+						"inline-flex w-10 shrink-0 items-center justify-center bg-transparent text-[#1c1a1e] outline-none transition-colors hover:bg-[#f9f5ff] focus-visible:bg-[#f9f5ff] disabled:pointer-events-none disabled:text-[#8b8694] disabled:opacity-60 [&_svg]:size-3.5",
 						buttonClassName,
 					)}
 				>
