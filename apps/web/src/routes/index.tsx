@@ -2,7 +2,7 @@ import type { ShopifyProduct } from '@er-octogone-2026/api/shopify';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -78,6 +78,7 @@ function OrderPage() {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [slots, setSlots] = useState<ProductSlot[]>([]);
   const [extras, setExtras] = useState<AccessoryExtras>({});
+  const [showCartErrors, setShowCartErrors] = useState(false);
 
   function handleQuantityChange(productId: string, newQty: number) {
     if (newQty < 0) return;
@@ -172,6 +173,10 @@ function OrderPage() {
     [slots, extras, products],
   );
   const cartValid = isCartValid(slots, extras);
+
+  useEffect(() => {
+    if (cartValid) setShowCartErrors(false);
+  }, [cartValid]);
   const itemCount =
     slots.length + Object.values(extras).reduce((sum, u) => sum + u.length, 0);
 
@@ -208,7 +213,8 @@ function OrderPage() {
   const onSubmit = handleSubmit(
     async (customer) => {
       if (!cartValid) {
-        toast.error('Veuillez compléter votre commande');
+        setShowCartErrors(true);
+        toast.error('Veuillez compléter vos sélections');
         return;
       }
       const billing = customer.billingSameAsShipping
@@ -239,7 +245,7 @@ function OrderPage() {
 
   if (phase === 'confirmed') return <OrderConfirmation orderName={orderName} />;
 
-  const submitDisabled = !cartValid || !isValid || createOrder.isPending;
+  const submitDisabled = itemCount === 0 || !isValid || createOrder.isPending;
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f0eef8]">
@@ -280,6 +286,7 @@ function OrderPage() {
                   index={cardIndex}
                   kicker={promo ? 'En promo' : 'Le pack'}
                   isPromo={promo}
+                  showErrors={showCartErrors}
                   onQuantityChange={(q) =>
                     handleQuantityChange(product.id.toString(), q)
                   }
@@ -322,6 +329,7 @@ function OrderPage() {
           <AccessoriesSection
             accessoryProducts={standaloneAccessories}
             extras={extras}
+            showErrors={showCartErrors}
             index={
               mainProducts.filter((p) => !isPromoProduct(p)).length +
               (mainProducts.some(isPromoProduct) ? 1 : 0) +

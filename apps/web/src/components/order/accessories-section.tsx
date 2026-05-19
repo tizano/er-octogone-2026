@@ -4,10 +4,13 @@ import { NumberInput } from '@er-octogone-2026/ui/components/number-input';
 import { hasMixedVariantPrices } from '@/lib/order/helpers';
 import type { AccessoryExtras, AccessoryUnit } from '@/lib/order/types';
 
+import { FieldError } from './field-error';
+
 type Props = {
   accessoryProducts: ShopifyProduct[];
   extras: AccessoryExtras;
   index?: number;
+  showErrors?: boolean;
   onQuantityChange: (productId: string, qty: number) => void;
   onUnitVariantChange: (
     productId: string,
@@ -27,6 +30,7 @@ export function AccessoriesSection({
   accessoryProducts,
   extras,
   index,
+  showErrors,
   onQuantityChange,
   onUnitVariantChange,
 }: Props) {
@@ -93,6 +97,7 @@ export function AccessoriesSection({
                       accessory={acc}
                       unit={unit}
                       index={units.length > 1 ? idx + 1 : undefined}
+                      showErrors={showErrors}
                       onChange={(variantId) =>
                         onUnitVariantChange(productId, unit.unitId, variantId)
                       }
@@ -113,13 +118,16 @@ function UnitSelect({
   unit,
   index,
   onChange,
+  showErrors,
 }: {
   accessory: ShopifyProduct;
   unit: AccessoryUnit;
   index?: number;
   onChange: (variantId: string) => void;
+  showErrors?: boolean;
 }) {
   const selectId = `extra-${unit.unitId}`;
+  const isInvalid = !!showErrors && !unit.variantId;
   return (
     <div className="flex flex-col gap-1.5">
       <label
@@ -134,7 +142,7 @@ function UnitSelect({
           id={selectId}
           value={unit.variantId}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-full appearance-none rounded-md border border-[#d8d2e0] bg-white px-3 pr-9 text-sm text-[#1c1a1e] transition-colors focus:border-[#4a2278] focus:outline-none focus:ring-2 focus:ring-[#4a2278]/20"
+          className={`h-10 w-full appearance-none rounded-md border bg-white px-3 pr-9 text-[#1c1a1e] text-sm transition-colors focus:outline-none focus:ring-2 ${isInvalid ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#d8d2e0] focus:border-[#4a2278] focus:ring-[#4a2278]/20'}`}
         >
           <option value="">- Choisir -</option>
           {accessory.variants.map((v) => (
@@ -160,6 +168,9 @@ function UnitSelect({
           />
         </svg>
       </div>
+      {isInvalid && (
+        <FieldError msg="Veuillez faire un choix ou remettre la quantité à 0" />
+      )}
     </div>
   );
 }

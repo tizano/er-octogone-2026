@@ -10,7 +10,8 @@
       "Bash(find h:/projet-web/er-octogone-2026/node_modules/.bun/@tanstack+react-start-server@*/node_modules/@tanstack/react-start-server/dist -name \"*.d.ts\")",
       "Bash(xargs grep -l \"handlers\")",
       "PowerShell(bun --filter '@er-octogone-2026/web' typecheck 2>&1)",
-      "Bash(echo \"EXIT=$?\")"
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(bun tsc *)"
     ]
   }
 }

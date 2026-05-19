@@ -3,6 +3,7 @@ import { NumberInput } from '@er-octogone-2026/ui/components/number-input';
 
 import type { IncludedAccessory, ProductSlot } from '@/lib/order/types';
 
+import { FieldError } from './field-error';
 import { OptionSelectors } from './option-selectors';
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
   index?: number;
   kicker?: string;
   isPromo?: boolean;
+  showErrors?: boolean;
   onQuantityChange: (qty: number) => void;
   onVariantChange: (slotId: string, variantId: string) => void;
   onIncludedChange: (
@@ -37,6 +39,7 @@ export function ProductBlock({
   index,
   kicker = 'Le pack',
   isPromo = false,
+  showErrors = false,
   onQuantityChange,
   onVariantChange,
   onIncludedChange,
@@ -142,6 +145,7 @@ export function ProductBlock({
                           accessory={acc}
                           slotId={slot.slotId}
                           current={current}
+                          showErrors={showErrors}
                           onChange={(variantId) =>
                             onIncludedChange(
                               slot.slotId,
@@ -168,13 +172,16 @@ function IncludedAccessorySelect({
   slotId,
   current,
   onChange,
+  showErrors,
 }: {
   accessory: ShopifyProduct;
   slotId: string;
   current: IncludedAccessory | undefined;
   onChange: (variantId: string) => void;
+  showErrors?: boolean;
 }) {
   const selectId = `inc-${slotId}-${accessory.id}`;
+  const isInvalid = !!showErrors && !current?.variantId;
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between">
@@ -196,7 +203,7 @@ function IncludedAccessorySelect({
           id={selectId}
           value={current?.variantId ?? ''}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-full appearance-none rounded-md border border-[#d8d2e0] bg-white px-3 pr-9 text-sm text-[#1c1a1e] transition-colors focus:border-[#4a2278] focus:outline-none focus:ring-2 focus:ring-[#4a2278]/20"
+          className={`h-10 w-full appearance-none rounded-md border bg-white px-3 pr-9 text-[#1c1a1e] text-sm transition-colors focus:outline-none focus:ring-2 ${isInvalid ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#d8d2e0] focus:border-[#4a2278] focus:ring-[#4a2278]/20'}`}
         >
           <option value="">- Choisir -</option>
           {accessory.variants.map((v) => (
@@ -222,6 +229,9 @@ function IncludedAccessorySelect({
           />
         </svg>
       </div>
+      {isInvalid && (
+        <FieldError msg="Veuillez faire un choix ou remettre la quantité à 0" />
+      )}
     </div>
   );
 }
